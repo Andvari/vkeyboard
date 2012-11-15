@@ -89,6 +89,12 @@ class VKEYBOARD():
     def text_to_find(self):
         return self.text
     
+    def show(self):
+        self.show_all()
+        
+    def hide(self):
+        self.hide()
+    
 vk = VKEYBOARD()
 
 gtk.gdk.threads_init()
