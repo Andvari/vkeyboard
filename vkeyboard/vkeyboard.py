@@ -8,6 +8,7 @@ Created on Nov 15, 2012
 import gtk
 import os
 import pango
+import gobject
 
 MULT = 4
 
@@ -20,32 +21,36 @@ buttons_ru = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "BACKSP",
                "SPACE", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "э"] 
 
 
-class VKEYBOARD():
+class vkeyboard(gtk.Window):
+    
     def __init__(self):
+        super(vkeyboard, self).__init__()
         
         self.flag = 0
+        self.text = ""
         
-        self.pangoFont = pango.FontDescription("Tahoma 40.2")
+        pangoFont = pango.FontDescription("Tahoma 40.2")
         
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        #self = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        gobject.signal_new("z_signal", self, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+
         
-        self.window.modify_font(self.pangoFont)
+        self.modify_font(pangoFont)
         
-        self.window.set_title("Search...")
+        self.set_title("Search...")
         
         self.tb = gtk.TextBuffer()
         self.tb.set_text("Type text to search...")
         
-        self.window.set_default_size(MULT*160, MULT*90)
+        self.set_default_size(MULT*160, MULT*90)
 
         self.tv = gtk.TextView(self.tb)
-        self.tv.modify_font(self.pangoFont)
+        self.tv.modify_font(pangoFont)
         
         self.tv.set_editable(False)
         self.tv.set_border_width(3)
 
         self.vbox  = gtk.VBox()
-        
         self.vbox.add(self.tv)
 
         self.hbox = {}
@@ -57,11 +62,10 @@ class VKEYBOARD():
                 self.hbox[i].add(self.button)
             self.vbox.add(self.hbox[i])
 
-        self.window.add(self.vbox)
-        self.window.set_position(gtk.WIN_POS_CENTER)
-        self.window.connect("destroy", gtk.main_quit)
-        self.window.show_all()
+        self.add(self.vbox)
+        self.set_position(gtk.WIN_POS_CENTER)
         
+        self.show_all()
 
     def on_click(self, e, prm):
         if(self.flag == 0):
@@ -75,7 +79,7 @@ class VKEYBOARD():
             
         elif (buttons_ru[prm] == "GO"):
             self.flag = 0
-            pass
+            self.emit("z_signal")
         else:
             if(buttons_ru[prm] == "SPACE"):
                 self.tb.insert(self.tb.get_end_iter(), " ")
@@ -86,16 +90,14 @@ class VKEYBOARD():
             
         print buttons_ru[prm]
         
-    def text_to_find(self):
+    def get_text_to_find(self):
         return self.text
     
-    def show(self):
-        self.show_all()
-        
-    def hide(self):
+    def on_destroy(self, e):
         self.hide()
-    
-vk = VKEYBOARD()
+
+
+vk = vkeyboard()
 
 gtk.gdk.threads_init()
 gtk.main()
@@ -103,3 +105,4 @@ gtk.main()
 print "Bye"
     
 os._exit(0)
+
