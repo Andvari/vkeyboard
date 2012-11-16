@@ -30,9 +30,11 @@ class vkeyboard(gtk.Window):
         self.text = ""
         
         pangoFont = pango.FontDescription("Tahoma 40.2")
-        
-        #self = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        gobject.signal_new("z_signal", self, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+
+        try:
+            gobject.signal_new("z_signal", self, gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+        except:
+            pass
 
         
         self.modify_font(pangoFont)
@@ -64,8 +66,6 @@ class vkeyboard(gtk.Window):
 
         self.add(self.vbox)
         self.set_position(gtk.WIN_POS_CENTER)
-        
-        self.show_all()
 
     def on_click(self, e, prm):
         if(self.flag == 0):
@@ -88,21 +88,9 @@ class vkeyboard(gtk.Window):
                     
             self.flag = 1
             
-        print buttons_ru[prm]
-        
     def get_text_to_find(self):
+        self.text = self.tb.get_text(self.tb.get_start_iter(), self.tb.get_end_iter())
         return self.text
     
     def on_destroy(self, e):
         self.hide()
-
-
-vk = vkeyboard()
-
-gtk.gdk.threads_init()
-gtk.main()
-
-print "Bye"
-    
-os._exit(0)
-
